@@ -1,6 +1,6 @@
 [![Build Status](https://app.travis-ci.com/josregmej/egc.svg?branch=master)](https://app.travis-ci.com/josregmej/egc) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea804484cf22460db0b1284b5ccbd7aa)](https://www.codacy.com/gh/josregmej/egc/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=josregmej/egc&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/ea804484cf22460db0b1284b5ccbd7aa)](https://www.codacy.com/gh/josregmej/egc/dashboard?utm_source=github.com&utm_medium=referral&utm_content=josregmej/egc&utm_campaign=Badge_Coverage)
 
-Plataforma voto electrónico educativa Prueba Commit
+Plataforma voto electrónico educativa
 =====================================================
 
 El objetivo de este proyecto es implementar una plataforma de voto
