@@ -10,15 +10,15 @@ RUN pip install ipython
 
 WORKDIR /app
 
-RUN git clone https://github.com/EGCETSII/decide .
-# COPY ../decide /app/
-ADD requirements.txt /app/requirements.txt
+## RUN git clone https://github.com/EGCETSII/decide .
+ADD decide /app/decide
+ADD docker/requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 WORKDIR /app/decide
 
 # local settings.py
-ADD docker-settings.py /app/decide/local_settings.py
+ADD docker/docker-settings.py /app/decide/local_settings.py
 
 RUN ./manage.py collectstatic
 
