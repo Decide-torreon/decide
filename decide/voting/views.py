@@ -6,10 +6,10 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 
 from .models import Question, QuestionOption, Voting
-from .serializers import SimpleVotingSerializer, VotingSerializer
+from .serializers import SimpleVotingSerializer, VotingSerializer, VotingSerializerByUser
 from base.perms import UserIsStaff
 from base.models import Auth
-
+from census.models import Census
 
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
@@ -99,3 +99,16 @@ class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
             msg = 'Action not found, try with start, stop or tally'
             st = status.HTTP_400_BAD_REQUEST
         return Response(msg, status=st)
+
+
+class VotingsPerUser(generics.ListCreateAPIView):
+    serializer_class = VotingSerializerByUser
+
+    def get_queryset(self):
+        queryset = []
+        userId = self.request.GET.get('id')
+        censusRows = Census.objects.filter(voter_id = userId)
+        for census in censusRows:
+            voting = Voting.objects.get(pk = census.voting_id)
+            queryset.append(voting)
+        return queryset
