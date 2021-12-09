@@ -49,7 +49,6 @@ volumes:
 
 networks:
   decide:
-    name: decide
     driver: bridge
     ipam:
      driver: default

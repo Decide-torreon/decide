@@ -1,13 +1,15 @@
+import Container from '@mui/material/Container';
 import AppRoutes from 'routes';
+import Navbar from 'components/Navbar';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Decide stats visualizer</h1>
-      </header>
+      <Navbar title="Decide Stats Visualizer" />
 
-      <AppRoutes />
+      <Container maxWidth="xl">
+        <AppRoutes />
+      </Container>
     </div>
   );
 }

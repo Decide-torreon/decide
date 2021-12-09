@@ -1,19 +1,11 @@
 
-export default class VotingService {
+export default class ChartService {
 
   constructor(repository) {
     this._repository = repository;
   }
 
-  findAll(page) {
-    return this._repository.listVotings();
-  }
-
-  findById(id) {
-    return this._repository.getVoting(id);
-  }
-
-  async countGroupedByState() {
+  async countVotingsGroupedByState() {
     const votings = await this._repository.listVotings();
     
     const group = votings.reduce((group, voting) => {
