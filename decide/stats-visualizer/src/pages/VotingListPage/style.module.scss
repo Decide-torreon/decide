@@ -1,5 +1,8 @@
 $item-margin-top: 2rem;
 
 .votingItem {
-  margin-top: $item-margin-top;
+
+  &:not(:first-child) {
+    margin-top: $item-margin-top;
+  }
 }

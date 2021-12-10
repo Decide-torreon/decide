@@ -19,9 +19,9 @@ export default class VotingState {
 const createVotingState = (code, name ) => new VotingState({ code, name });
 
 const VOTING_STATES = {
-  notStarted: createVotingState('NOT_STARTED', 'No empezada'),
-  started: createVotingState('STARTED', 'Empezada'),
-  finished: createVotingState('FINISHED', 'Terminada'),
+  notStarted: createVotingState('NOT_STARTED', 'Not started'),
+  started: createVotingState('STARTED', 'Started'),
+  finished: createVotingState('FINISHED', 'Finished'),
 };
 
 export { VOTING_STATES };
