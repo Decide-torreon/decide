@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('doc/', schema_view),
     path('gateway/', include('gateway.urls')),
+    path('rest-auth/', include('rest_auth.urls')),
 ]
 
 for module in settings.MODULES:

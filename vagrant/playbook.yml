@@ -5,6 +5,7 @@
     - include: packages.yml
       tags: ["packages"]
     - include: user.yml
+    - include: nodejs.yml
     - include: python.yml
       tags: ["app"]
     - include: files.yml
