@@ -1,7 +1,7 @@
-import {Chart, ArcElement} from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
-Chart.register(ArcElement);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 const AVAILABLE_COLORS = [
   'rgb(255, 99, 132)',
@@ -12,6 +12,15 @@ const AVAILABLE_COLORS = [
 const DEFAULT_DATASET_OPTIONS = {
   backgroundColor: AVAILABLE_COLORS,
   hoverOffset: 4,
+};
+
+const DEFAULT_LEGEND_PLUGIN_OPTIONS = {
+  position: 'left'
+};
+
+const DEFAULT_TITLE_PLUGIN_OPTINS = {
+  display: false,
+  text: undefined,
 };
 
 const overrideIfUndefined = (evalValue, defaultValue) => 
@@ -26,7 +35,20 @@ export default function DoughnutChart({ labels, datasets }) {
       .map(entry => [entry[0], overrideIfUndefined(dataset[entry[0]], entry[1])]))
   }));
 
-  console.log('dataProps', dataProps);
+  const plugins = {
+    legend: { ... DEFAULT_LEGEND_PLUGIN_OPTIONS },
+    title: { ...DEFAULT_TITLE_PLUGIN_OPTINS },
+  };
 
-  return (<Doughnut data={ dataProps }  />)
+  if (datasets.length === 1 && typeof datasets[0].label === 'string') {
+    plugins.title.text = datasets[0].label;
+    plugins.title.display = true;
+  }
+
+  return (
+    <Doughnut data={ dataProps } height={300} options={{ 
+      plugins: plugins,
+      maintainAspectRatio: false,
+    }} />
+  )
 }
