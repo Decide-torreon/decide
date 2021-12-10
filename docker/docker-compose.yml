@@ -4,13 +4,11 @@ services:
   db:
     restart: always
     container_name: decide_db
-    image: postgres:10.15-alpine
+    image: postgres:alpine
     volumes:
       - db:/var/lib/postgresql/data
     networks:
       - decide
-    environment:
-      - POSTGRES_PASSWORD=postgres
   web:
     restart: always
     container_name: decide_web
@@ -29,6 +27,9 @@ services:
     restart: always
     container_name: decide_nginx
     image: decide_nginx:latest
+    build:
+        context: .
+        dockerfile: Dockerfile-nginx
     volumes:
       - static:/app/static
     ports:
@@ -37,19 +38,15 @@ services:
       - web
     networks:
       - decide
-      
+
 volumes:
   static:
     name: decide_static
   db:
     name: decide_db
-  node_modules:
-    name: dsv_node_modules
-  
 
 networks:
   decide:
-    name: decide
     driver: bridge
     ipam:
      driver: default
