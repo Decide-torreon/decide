@@ -1,15 +1,17 @@
 import django_filters.rest_framework
 from django.conf import settings
 from django.utils import timezone
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework import generics, status
 from rest_framework.response import Response
 
 from .models import Question, QuestionOption, Voting
-from .serializers import SimpleVotingSerializer, VotingSerializer, VotingSerializerByUser
+from .serializers import SimpleVotingSerializer, VotingSerializer
 from base.perms import UserIsStaff
 from base.models import Auth
-from census.models import Census
+from django.db import transaction
+import json
+import urllib
 
 class VotingView(generics.ListCreateAPIView):
     queryset = Voting.objects.all()
@@ -100,15 +102,32 @@ class VotingUpdate(generics.RetrieveUpdateDestroyAPIView):
             st = status.HTTP_400_BAD_REQUEST
         return Response(msg, status=st)
 
+def voting_statistics(request):
+    statistics =[
+         ['Average number of questions per voting:'],
+         ['Average number of options per question:'],
+         ['Total votings:'],
+         ['Total questions:'],
+         ['Total options:']
+    ]
 
-class VotingsPerUser(generics.ListCreateAPIView):
-    serializer_class = VotingSerializerByUser
 
-    def get_queryset(self):
-        queryset = []
-        userId = self.request.GET.get('id')
-        censusRows = Census.objects.filter(voter_id = userId)
-        for census in censusRows:
-            voting = Voting.objects.get(pk = census.voting_id)
-            queryset.append(voting)
-        return queryset
+    #Calculamos los datos
+    num_questions = Question.objects.all().count()
+    num_options = QuestionOption.objects.all().count()
+    totalVotings = Voting.objects.all().count()
+
+    #Seteamos las variables
+    statistics[0].append(num_questions / totalVotings)
+    statistics[1].append(num_options / num_questions)
+    statistics[2].append(totalVotings)
+    statistics[3].append(num_questions)
+    statistics[4].append(num_options)
+
+
+
+
+
+    return render(request,'voting/votingStatistics.html',
+                  {'statistics': statistics,
+                   'voting_url': 'http://127.0.0.1:8000/voting/statistics/'}, )
