@@ -6,6 +6,17 @@ from django.dispatch import receiver
 from base import mods
 from base.models import Auth, Key
 
+class YesOrNoQuestion(models.Model):
+    desc = models.TextField()
+    CHOICES = (
+        ('Y', 'Yes'),
+        ('N', 'No'),
+    )
+    choice = models.CharField(max_length=1, choices=CHOICES, blank=True)
+
+    def __str__(self):
+        return self.desc
+
 
 class Question(models.Model):
     desc = models.TextField()

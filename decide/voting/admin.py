@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.utils import timezone
 
-from .models import *
 
+from .models import *
 
 from .filters import StartedFilter
 
@@ -44,6 +44,7 @@ class VotingAdmin(admin.ModelAdmin):
 
     actions = [ start, stop, tally ]
 
+
  
 class MultiOptionLine(admin.TabularInline):
     model = MultiOption
@@ -63,10 +64,13 @@ class MultiQuestionAdmin(admin.ModelAdmin):
 class MultiOptionAdmin(admin.ModelAdmin):
     list_display = ('id','option','numberVoted','multiQuestion')
 
+class YesOrNoQuestionAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(Voting, VotingAdmin)
 admin.site.register(Question, QuestionAdmin)
-
+admin.site.register(YesOrNoQuestion, YesOrNoQuestionAdmin)
 admin.site.register(MultiVoting, MultiVotingAdmin)
 admin.site.register(MultiQuestion,MultiQuestionAdmin)
 admin.site.register(MultiOption, MultiOptionAdmin)
+
