@@ -132,3 +132,69 @@ class Voting(models.Model):
 
     def __str__(self):
         return self.name
+
+class MultiVoting(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=60)
+    desc = models.TextField()
+
+    start_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+    def addMultiQuestion(self,multiQuestion):
+        multiQuestion.multiVoting = self
+        multiQuestion.save()
+    
+    def numberMultiQuestion(self):
+        return MultiQuestion.objects.filter(multiVoting_id=self.id).count()
+
+class MultiQuestion(models.Model):
+    id = models.AutoField(primary_key=True)
+    multiVoting = models.ForeignKey(MultiVoting,on_delete = models.CASCADE)
+    question = models.CharField(max_length=50)
+    
+    def MultiVoting_Name(self):
+        return self.multiVoting.title
+    
+    def __str__(self):
+        return self.question
+
+    def number_Options(self):
+        return MultiOption.objects.filter(multiQuestion_id=self.id).count()
+
+    def addMultiOption(self, multiOption):
+        multiOption.multiQuestion = self
+        multiOption.save()
+
+    def countMultiOption(self):
+        options = MultiOption.objects.filter(multiQuestion_id=self.id).values('option', 'numberVoted')
+        res = {}
+        for option in options:
+            res[option['option']] = opcion['numberVoted']
+        return res
+
+    def voteMultiOption(self, selectedOptions):
+        for option in selectedOptions:
+            option.multiQuestion = self
+            option.numberVoted = option.numberVoted + 1
+            option.save()
+
+class MultiOption(models.Model):
+    id = models.AutoField(primary_key=True)
+    multiQuestion = models.ForeignKey(MultiQuestion,on_delete = models.CASCADE)
+    option= models.CharField(max_length=100)
+    numberVoted = models.PositiveIntegerField(blank=True, null=True,default=0)
+
+    def __str__(self):
+        return self.option
+
+    def MultiQuestion_Name(self):
+        return self.multiQuestion.question
+
+    def voteOption(self):
+        self.numberVoted = self.numberVoted + 1
+        self.save()
+        
