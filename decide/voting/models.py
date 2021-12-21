@@ -6,6 +6,9 @@ from django.dispatch import receiver
 from base import mods
 from base.models import Auth, Key
 
+
+import zipfile
+
 class YesOrNoQuestion(models.Model):
     desc = models.TextField()
     CHOICES = (
@@ -16,6 +19,7 @@ class YesOrNoQuestion(models.Model):
 
     def __str__(self):
         return self.desc
+
 
 
 class Question(models.Model):
@@ -129,6 +133,16 @@ class Voting(models.Model):
 
         self.postproc = postp
         self.save()
+
+        archivo = open("tallydeVoting"+str((self.id))+".txt","w")
+        archivo.write("\n Hola Mundo\n")
+        archivo.write(str((opts)))
+        archivo.close()
+
+        zip_file=zipfile.ZipFile("tally.zip", mode="w")
+        zip_file.write("tallydeVoting"+str((self.id))+".txt")
+        zip_file.close()
+        return zip_file
 
     def __str__(self):
         return self.name
