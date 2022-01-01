@@ -27,6 +27,21 @@ class YesOrNoQuestion(models.Model):
 
 class Question(models.Model):
     desc = models.TextField()
+    is_si_no_question = models.BooleanField(default=False)
+
+    def save(self):
+
+        if self.is_si_no_question:
+            if self.options.all().count()>=1:
+                self.options.all().delete()
+    
+            question_si = QuestionOption(option = 'Si', number = 0, question = self)
+            question_si.save()
+
+            question_no = QuestionOption(option = 'No', number = 1, question = self)
+            question_no.save()
+        
+        super().save()
 
     def __str__(self):
         return self.desc
@@ -49,7 +64,7 @@ class QuestionOption(models.Model):
 class Voting(models.Model):
     name = models.CharField(max_length=200)
     desc = models.TextField(blank=True, null=True)
-    question = models.ForeignKey(Question, related_name='voting', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='voting', null=True, on_delete=models.CASCADE)
 
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
