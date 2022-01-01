@@ -28,10 +28,12 @@ class YesOrNoQuestion(models.Model):
 class Question(models.Model):
     desc = models.TextField()
     is_yes_no_question = models.BooleanField(default=False)
+    
 
     def save(self):
-
-        if self.is_si_no_question:
+        super().save()
+        
+        if self.is_yes_no_question:
             if self.options.all().count()>=1:
                 self.options.all().delete()
     
@@ -41,7 +43,7 @@ class Question(models.Model):
             question_no = QuestionOption(option = 'No', number = 1, question = self)
             question_no.save()
         
-        super().save()
+        
 
     def __str__(self):
         return self.desc
