@@ -45,29 +45,7 @@ class VotingAdmin(admin.ModelAdmin):
     actions = [ start, stop, tally ]
 
 
- 
-class MultiOptionLine(admin.TabularInline):
-    model = MultiOption
-    extra = 1
-class MultiQuestionLine(admin.TabularInline):
-    model = MultiQuestion
-    extra = 1
-class MultiVotingAdmin(admin.ModelAdmin):
-    list_display=('id','title','desc','numberMultiQuestion')
-    lines =[MultiQuestionLine]
-    actions = [ start, stop]
-
-class MultiQuestionAdmin(admin.ModelAdmin):
-    list_display = ('id','multiVoting','question','number_Options','countMultiOption')
-    lines =[MultiOptionLine]
-
-class MultiOptionAdmin(admin.ModelAdmin):
-    list_display = ('id','option','numberVoted','multiQuestion')
-
-
 admin.site.register(Voting, VotingAdmin)
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(MultiVoting, MultiVotingAdmin)
-admin.site.register(MultiQuestion,MultiQuestionAdmin)
-admin.site.register(MultiOption, MultiOptionAdmin)
+
 
