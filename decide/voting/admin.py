@@ -64,12 +64,9 @@ class MultiQuestionAdmin(admin.ModelAdmin):
 class MultiOptionAdmin(admin.ModelAdmin):
     list_display = ('id','option','numberVoted','multiQuestion')
 
-class YesOrNoQuestionAdmin(admin.ModelAdmin):
-    pass
 
 admin.site.register(Voting, VotingAdmin)
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(YesOrNoQuestion, YesOrNoQuestionAdmin)
 admin.site.register(MultiVoting, MultiVotingAdmin)
 admin.site.register(MultiQuestion,MultiQuestionAdmin)
 admin.site.register(MultiOption, MultiOptionAdmin)
