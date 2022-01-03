@@ -37,14 +37,3 @@ class SimpleVotingSerializer(serializers.HyperlinkedModelSerializer):
         model = Voting
         fields = ('name', 'desc', 'question', 'start_date', 'end_date', 'category')
 
-class YesOrNoQuestionSerializer(serializers.HyperlinkedModelSerializer):
-    desc = serializers.CharField()
-    CHOICES = (
-        ('Y', 'Yes'),
-        ('N', 'No'),
-    )
-    choice = serializers.ChoiceField(choices=CHOICES)
-    class Meta:
-        model = YesOrNoQuestion
-        fields = ('desc', 'choice')
-
