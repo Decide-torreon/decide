@@ -227,3 +227,7 @@ class VotingTestCase(BaseTestCase):
 
         response = self.client.post('/voting/', data, format='json')
         self.assertEqual(response.status_code, 401)
+
+    def test_create_voting_url_whitespaces(self):
+        v = self.create_voting(url="_test voting")
+        self.assertTrue(Voting.objects.filter(url="_test+voting").exists())
