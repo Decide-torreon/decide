@@ -257,6 +257,21 @@ class VotingTestCase(BaseTestCase):
         response = self.client.post('/voting/', data, format='json')
         self.assertEqual(response.status_code, 401)
         
+    def test_create_Voting_error(self):
+
+        try: 
+            voting = Voting()
+            voting.save()
+        except:
+            self.assertTrue(True)
+            
+    def test_create_Question_error(self):
+
+        try: 
+            question = Question()
+            question.save()
+        except:
+            self.assertTrue(True)
     
 
 
