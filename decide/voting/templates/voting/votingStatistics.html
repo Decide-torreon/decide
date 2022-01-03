@@ -1,0 +1,11 @@
+{% extends "voting/base.html" %}
+{% block content %}
+
+{% for statistic in statistics %}
+    <div class="container">
+    {% for field in  statistic %}
+            {{ field }}
+    {% endfor %}
+    </div>
+{% endfor %}
+{% endblock content %}
