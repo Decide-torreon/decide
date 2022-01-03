@@ -255,6 +255,13 @@ class Test_enrmorvaz(BaseTestCase):
         self.assertEquals(q.options.all()[0].option, 'Yes')
         self.assertEquals(q.options.all()[1].option, 'No')
     
+    def test_SinDescSiNoError(self):
+        try:
+            q3 = Question(is_yes_no_question=True)
+            q3.save()
+        except:
+            self.assertTrue(True)
+    
    
         
     
