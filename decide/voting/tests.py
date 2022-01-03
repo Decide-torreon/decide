@@ -240,6 +240,12 @@ class Test_enrmorvaz(BaseTestCase):
         self.assertEquals(q.options.all()[0].option, 'Yes')
         self.assertEquals(q.options.all()[1].option, 'No')
     
+    def test_OpcionesSiNoError(self):
+        q = Question.objects.get(desc='Esto NO es una pregunta de si o no')
+        q.save()
+        if(q.options.all().count()!=2):
+            self.assertTrue(True)
+    
    
         
     
