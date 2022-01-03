@@ -12,19 +12,6 @@ from base.models import Auth, Key
 
 import zipfile
 
-class YesOrNoQuestion(models.Model):
-    desc = models.TextField()
-    CHOICES = (
-        ('Y', 'Yes'),
-        ('N', 'No'),
-    )
-    choice = models.CharField(max_length=1, choices=CHOICES, blank=True)
-
-    def __str__(self):
-        return self.desc
-
-
-
 class Question(models.Model):
     desc = models.TextField()
     is_yes_no_question = models.BooleanField(default=False)
