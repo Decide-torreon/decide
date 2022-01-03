@@ -262,6 +262,13 @@ class Test_enrmorvaz(BaseTestCase):
         except:
             self.assertTrue(True)
     
+    def test_OpcionError(self):
+        try:
+            q = QuestionOption()
+            q.save()
+        except:
+            self.assertTrue(True)
+    
    
         
     
