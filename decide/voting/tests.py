@@ -233,10 +233,23 @@ class VotingTestCase(BaseTestCase):
         self.assertTrue(Voting.objects.filter(url="_test+voting").exists())
 
     def test_create_voting_without_url(self):
+        
         data = {
             'name': 'Example No URL',
             'desc': 'Description example',
             'question': 'Is this a question? ',
+            'question_opt': ['Yes', 'No']
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+    def test_create_voting_without_url_and_question(self):
+        
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
             'question_opt': ['Yes', 'No']
         }
 
