@@ -39,3 +39,6 @@ DATABASES = {
 
 # number of bits for the key, all auths should use the same number of bits
 KEYBITS = 256
+
+# cors configuration
+CORS_ORIGIN_ALLOW_ALL = True
