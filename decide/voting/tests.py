@@ -31,13 +31,18 @@ class VotingTestCase(BaseTestCase):
         k.k = ElGamal.construct((p, g, y))
         return k.encrypt(msg)
 
-    def create_voting(self):
+    #def create_voting(self):
+    def create_voting(self, url=None):
         q = Question(desc='test question')
         q.save()
         for i in range(5):
             opt = QuestionOption(question=q, option='option {}'.format(i+1))
             opt.save()
-        v = Voting(name='test voting', question=q)
+        #v = Voting(name='test voting', question=q)
+        if url:
+            v = Voting(name='test voting', question=q, url=url)
+        else: 
+            v = Voting(name='test voting', question=q)
         v.save()
 
         a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
@@ -208,3 +213,17 @@ class VotingTestCase(BaseTestCase):
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
+
+    def test_create_voting_url_exists(self):
+        v = self.create_voting(url="_test_voting")
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'url': '_test_voting',
+            'question': 'Is this a question? ',
+            'question_opt': ['Yes', 'No']
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
