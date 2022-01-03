@@ -208,3 +208,38 @@ class VotingTestCase(BaseTestCase):
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
+
+class Test_enrmorvaz(BaseTestCase):
+    def setUp(self):
+
+        q1 = Question(desc='Esto es una pregunta de si o no', is_yes_no_question=True)
+        q1.save()
+
+        q2 = Question(desc='Esto NO es una pregunta de si o no', is_yes_no_question=True)
+        q2.save()
+
+        qo1 = QuestionOption(question = q2, option = 'Opcion 1')
+        qo1.save()
+
+        qo2 = QuestionOption(question = q2, option = 'Opcion 2')
+        qo2.save()
+
+        qo3 = QuestionOption(question = q2, option = 'Opcion 3')
+        qo3.save()
+
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.v2=None
+
+    def test_OpcionesSiNo(self):
+        q = Question.objects.get(desc='Esto es una pregunta de si o no')
+        q.save()
+
+        self.assertEquals(len(q.options.all()), 2)
+        self.assertEquals(q.options.all()[0].option, 'Yes')
+        self.assertEquals(q.options.all()[1].option, 'No')
+    
+   
+        
+    
