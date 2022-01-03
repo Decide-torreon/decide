@@ -60,6 +60,15 @@ class Voting(models.Model):
     tally = JSONField(blank=True, null=True)
     postproc = JSONField(blank=True, null=True)
 
+    TYPES = (
+        ('Importante', 'Importante'),
+        ('Informativa', 'Informativa'),
+        ('Urgente', 'Urgente'),
+        ('Prueba', 'Prueba'),
+    )
+    category = models.CharField(max_length=1000, choices=TYPES, blank=True)
+    
+
     #url = models.CharField(max_length=40)
     url = models.CharField(max_length=40, help_text=u"http://localhost:8000/booth/",null=True)
 
@@ -169,7 +178,7 @@ class Voting(models.Model):
         return zip_file
 
     def __str__(self):
-        return self.name
+        return self.name 
 
 class MultiVoting(models.Model):
     id = models.AutoField(primary_key=True)
