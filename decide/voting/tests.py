@@ -90,6 +90,14 @@ class VotingTestCase(BaseTestCase):
         question.save()
         self.assertTrue(Question.objects.filter(desc="Descripcion de prueba Yes-No question"))
         
+#Test creación pregunta errónea (sin atributos)
+    def test_create_question_error(self):
+        try: 
+            bad_question = Question()
+            bad_question.save()
+        except:
+            self.assertTrue(True)
+        
     
         
 #    def test_complete_voting(self):
