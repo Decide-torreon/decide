@@ -89,7 +89,7 @@ class VotingTestCase(BaseTestCase):
         
         question.save()
         self.assertTrue(Question.objects.filter(desc="Descripcion de prueba Yes-No question"))
-        
+
 #Test creación pregunta errónea (sin atributos)
     def test_create_question_error(self):
         try: 
@@ -97,10 +97,46 @@ class VotingTestCase(BaseTestCase):
             bad_question.save()
         except:
             self.assertTrue(True)
-        
-    
-        
+
+#Test creación votación sin url ni pregunta
+#    def test_create_voting_no_url_and_question(self):
+#        v = self.create_voting()
+
+#        data = {
+#            'name': 'Test name',
+#            'desc': 'Test description',
+#            'question_opt': ['Yes', 'No']
+#        }
+
+#        response = self.client.post('/voting/', data, format='json')
+#        self.assertEqual(response.status_code, 401)
+
+
+
+
+
+
+
+
+
+#Test votación completa     
 #    def test_complete_voting(self):
+
+#        q = Question(desc='test question 3')
+#        q.save()
+#        for i in range(3):
+#            opt = QuestionOption(question=q, option='option {}'.format(i+1))
+#            opt.save()
+#        v = Voting(name='test',question=q)
+#        v.save()
+
+#        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+#                                          defaults={'me': True, 'name': 'test auth'})
+#        a.save()
+#        v.auths.add(a)
+
+
+
 #        v = self.create_voting()
 #        self.create_voters(v)
 
@@ -157,10 +193,9 @@ class VotingTestCase(BaseTestCase):
 
 #    def test_update_voting(self):
 #        voting = self.create_voting()
-
 #        data = {'action': 'start'}
-        #response = self.client.post('/voting/{}/'.format(voting.pk), data, format='json')
-        #self.assertEqual(response.status_code, 401)
+#        response = self.client.post('/voting/{}/'.format(voting.pk), data, format='json')
+#        self.assertEqual(response.status_code, 401)
 
         # login with user no admin
 #        self.login(user='noadmin')
