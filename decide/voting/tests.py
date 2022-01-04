@@ -97,7 +97,15 @@ class VotingTestCase(BaseTestCase):
             bad_question.save()
         except:
             self.assertTrue(True)
-
+            
+#Test creación de tipo Yes-No errónea (sin atributos)
+    def test_create_yes_no_question_error(self):
+        try:
+            badYesNoQuestion = Question(is_yes_no_question=True)
+            badYesNoQuestion.save()
+        except:
+            self.assertTrue(True)
+     
 #Test creación votación sin url ni pregunta
 #    def test_create_voting_no_url_and_question(self):
 #        v = self.create_voting()
