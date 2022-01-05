@@ -127,7 +127,13 @@ class VotingTestCase(BaseTestCase):
         self.assertTrue(User.objects.filter(username='usuariodeprueba'))
         
 
-#Test creación de usuario de manera errónea (sin atributos)
+#Test creación de usuario de manera errónea (sin pk)
+    def test_create_bad_user(self):
+        try:
+            bad_user=self.get_or_create_user()
+            bad_user-save()
+        except:
+            self.assertTrue(self)
 
 #Test creación de censo correctamente
 
