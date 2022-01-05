@@ -128,15 +128,36 @@ class VotingTestCase(BaseTestCase):
         
 
 #Test creación de usuario de manera errónea (sin pk)
-    def test_create_bad_user(self):
+    def test_create_bad_user_no_pk(self):
         try:
             bad_user=self.get_or_create_user()
             bad_user.save()
         except:
-            self.assertTrue(self)
+            self.assertTrue(True)
 
-#Test creación de censo correctamente
+#Test creación de usuario de manera errónea (sin contraseña)
+    def test_create_bad_user_no_password(self):
+        try:
+            bad_user=self.get_or_create_user(56)
+            bad_user.password=''
+            bad_user.username='usuariodeprueba'
+            bad_user.save()
+            data = {
+                'username': 'usuariodeprueba',
+                'password': ''
+            }
+            
+            response = self.client.post('/admin/', data, format='json')
+            self.assertEqual(response.status_code, 401)
+        except:
+            self.assertTrue(True)
 
+
+
+#Test creación de votantes correctamente
+#    def test_create_voters(self):
+#        voters = self.create_voters(1)
+#        self.assertTrue(True)
 #Test creación de censo de manera errónea 
 
 
