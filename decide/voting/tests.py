@@ -31,13 +31,17 @@ class VotingTestCase(BaseTestCase):
         k.k = ElGamal.construct((p, g, y))
         return k.encrypt(msg)
 
-    def create_voting(self):
+    def create_voting(self, url=None):
         q = Question(desc='test question')
         q.save()
         for i in range(5):
             opt = QuestionOption(question=q, option='option {}'.format(i+1))
             opt.save()
         v = Voting(name='test voting', question=q)
+        if url:
+            v = Voting(name='test voting', question=q, url=url)
+        else:
+            v = Voting(name='test voting', question=q)
         v.save()
 
         a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
@@ -114,6 +118,20 @@ class VotingTestCase(BaseTestCase):
         
         except:
             self.assertTrue(True)
+            
+#Test creación de usuario correctamente
+    def test_create_user(self):
+        user = self.get_or_create_user(55)
+        user.username = 'usuariodeprueba'
+        user.save()
+        self.assertTrue(User.objects.filter(username='usuariodeprueba'))
+        
+
+#Test creación de usuario de manera errónea (sin atributos)
+
+#Test creación de censo correctamente
+
+#Test creación de censo de manera errónea 
 
 
 #Test creación votación sin url ni pregunta
@@ -121,14 +139,13 @@ class VotingTestCase(BaseTestCase):
 #        v = self.create_voting()
 
 #        data = {
-#            'name': 'Test name',
-#            'desc': 'Test description',
+#            'name': 'Example',
+#            'desc': 'Description example',
 #            'question_opt': ['Yes', 'No']
 #        }
 
 #        response = self.client.post('/voting/', data, format='json')
 #        self.assertEqual(response.status_code, 401)
-
 
 
 
