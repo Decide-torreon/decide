@@ -131,7 +131,7 @@ class VotingTestCase(BaseTestCase):
     def test_create_bad_user(self):
         try:
             bad_user=self.get_or_create_user()
-            bad_user-save()
+            bad_user.save()
         except:
             self.assertTrue(self)
 
