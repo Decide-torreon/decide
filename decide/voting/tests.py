@@ -330,4 +330,69 @@ class Test_enrmorvaz(BaseTestCase):
         except:
             self.assertTrue(True)    
 
+                   
+#Pruebas josregmej
+    def test_create_voting_from_api_noadmin(self):
+        data = {'name': 'Example'}
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+        self.login(user='noadmin')
+        response = mods.post('voting', params=data, response=True)
+        self.assertEqual(response.status_code, 403)
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question': 'I want a ',
+            'question_opt': ['cat', 'dog', 'horse'],
+            'category': 'Urgente'
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 403 )
+        
+    def test_create_voting_without_url_and_question(self):
+        v = self.create_voting()
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question_opt': ['Yes', 'No'],
+            'category': 'Urgente'
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+        
+    def test_create_voting_without_url_and_options(self):
+        v = self.create_voting()
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question': 'Is there any url? ',
+            'category': 'Urgente'
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+        
+    def test_create_Voting_error(self):
+
+        try: 
+            voting = Voting()
+            voting.save()
+        except:
+            self.assertTrue(True)
+            
+    def test_create_Question_error(self):
+
+        try: 
+            question = Question()
+            question.save()
+        except:
+            self.assertTrue(True)
+    
+
     
