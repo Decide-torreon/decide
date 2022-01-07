@@ -214,7 +214,9 @@ class VotingTestCase(BaseTestCase):
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
-
+    
+   
+        
     def test_create_voting_url_exists(self):
         v = self.create_voting(url="_test_voting")
 
@@ -268,5 +270,64 @@ class VotingTestCase(BaseTestCase):
         response = self.client.post('/voting/', data, format='json')
         self.assertEqual(response.status_code, 401)
     
-     
+class Test_enrmorvaz(BaseTestCase):
+    def setUp(self):
+
+        q1 = Question(desc='Esto es una pregunta de si o no', is_yes_no_question=True)
+        q1.save()
+
+        q2 = Question(desc='Esto NO es una pregunta de si o no', is_yes_no_question=True)
+        q2.save()
+
+        qo1 = QuestionOption(question = q2, option = 'Opcion 1')
+        qo1.save()
+
+        qo2 = QuestionOption(question = q2, option = 'Opcion 2')
+        qo2.save()
+
+        qo3 = QuestionOption(question = q2, option = 'Opcion 3')
+        qo3.save()
+
+    def tearDown(self):
+        super().tearDown()
+        self.v=None
+        self.v2=None
+
+    def test_OpcionesSiNo(self):
+        q = Question.objects.get(desc='Esto es una pregunta de si o no')
+        q.save()
+
+        self.assertEquals(len(q.options.all()), 2)
+        self.assertEquals(q.options.all()[0].option, 'Yes')
+        self.assertEquals(q.options.all()[1].option, 'No')
+    
+    def test_OpcionesSiNoError(self):
+        q = Question.objects.get(desc='Esto NO es una pregunta de si o no')
+        q.save()
+        if(q.options.all().count()!=2):
+            self.assertTrue(True)
+    
+    def test_RestablecerValoresSiNo(self):
+        q = Question.objects.get(desc='Esto NO es una pregunta de si o no')
+        q.is_yes_no_question = True
+        q.save()
+
+        self.assertEquals(len(q.options.all()), 2)
+        self.assertEquals(q.options.all()[0].option, 'Yes')
+        self.assertEquals(q.options.all()[1].option, 'No')
+    
+    def test_SinDescSiNoError(self):
+        try:
+            q3 = Question(is_yes_no_question=True)
+            q3.save()
+        except:
+            self.assertTrue(True)
+    
+    def test_OpcionError(self):
+        try:
+            q = QuestionOption()
+            q.save()
+        except:
+            self.assertTrue(True)    
+
     
