@@ -395,4 +395,68 @@ class Test_enrmorvaz(BaseTestCase):
             self.assertTrue(True)
     
 
-    
+            
+#Test creación de pregunta
+    def test_create_question(self):
+        question = Question(desc="Descripcion de prueba Yes-No question")
+        
+        question.save()
+        self.assertTrue(Question.objects.filter(desc="Descripcion de prueba Yes-No question"))
+
+#Test creación pregunta errónea (sin atributos)
+    def test_create_question_error(self):
+        try: 
+            bad_question = Question()
+            bad_question.save()
+        except:
+            self.assertTrue(True)
+            
+#Test creación pregunta de tipo Yes-No errónea (sin atributos)
+    def test_create_yes_no_question_error(self):
+        try:
+            badYesNoQuestion = Question(is_yes_no_question=True)
+            badYesNoQuestion.save()
+        except:
+            self.assertTrue(True)
+
+#Test creación de votación errónea (sin atributos)
+    def test_create_voting_empty_desc(self):
+        try: 
+            bad_voting = Voting()
+            bad_voting.save()
+        
+        except:
+            self.assertTrue(True)
+            
+#Test creación de usuario correctamente
+    def test_create_user(self):
+        user = self.get_or_create_user(55)
+        user.username = 'usuariodeprueba'
+        user.save()
+        self.assertTrue(User.objects.filter(username='usuariodeprueba'))
+        
+
+#Test creación de usuario de manera errónea (sin pk)
+    def test_create_bad_user_no_pk(self):
+        try:
+            bad_user=self.get_or_create_user()
+            bad_user.save()
+        except:
+            self.assertTrue(True)
+
+#Test creación de usuario de manera errónea (sin contraseña)
+    def test_create_bad_user_no_password(self):
+        try:
+            bad_user=self.get_or_create_user(56)
+            bad_user.password=''
+            bad_user.username='usuariodeprueba'
+            bad_user.save()
+            data = {
+                'username': 'usuariodeprueba',
+                'password': ''
+            }
+            
+            response = self.client.post('/admin/', data, format='json')
+            self.assertEqual(response.status_code, 401)
+        except:
+            self.assertTrue(True)
