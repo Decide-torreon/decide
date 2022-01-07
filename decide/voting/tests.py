@@ -16,6 +16,7 @@ from mixnet.models import Auth
 from voting.models import Voting, Question, QuestionOption
 
 
+
 class VotingTestCase(BaseTestCase):
 
     def setUp(self):
@@ -31,13 +32,16 @@ class VotingTestCase(BaseTestCase):
         k.k = ElGamal.construct((p, g, y))
         return k.encrypt(msg)
 
-    def create_voting(self):
+    #def create_voting(self):
+    def create_voting(self, url):
         q = Question(desc='test question')
         q.save()
         for i in range(5):
             opt = QuestionOption(question=q, option='option {}'.format(i+1))
             opt.save()
-        v = Voting(name='test voting', question=q)
+        #v = Voting(name='test voting', question=q)
+        
+        v = Voting(name='test voting', question=q, url=url)
         v.save()
 
         a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
@@ -84,7 +88,7 @@ class VotingTestCase(BaseTestCase):
         return clear
 
     def test_complete_voting(self):
-        v = self.create_voting()
+        v = self.create_voting('test')
         self.create_voters(v)
 
         v.create_pubkey()
@@ -124,6 +128,8 @@ class VotingTestCase(BaseTestCase):
         data = {
             'name': 'Example',
             'desc': 'Description example',
+            'url': 'test',
+            #'category':'Urgente',
             'question': 'I want a ',
             'question_opt': ['cat', 'dog', 'horse']
         }
@@ -132,7 +138,7 @@ class VotingTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_update_voting(self):
-        voting = self.create_voting()
+        voting = self.create_voting('test')
 
         data = {'action': 'start'}
         #response = self.client.post('/voting/{}/'.format(voting.pk), data, format='json')
@@ -208,7 +214,62 @@ class VotingTestCase(BaseTestCase):
         response = self.client.put('/voting/{}/'.format(voting.pk), data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
+    
+   
+        
+    def test_create_voting_url_exists(self):
+        v = self.create_voting(url="_test_voting")
 
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'url': '_test_voting',
+            'question': 'Is this a question? ',
+            'question_opt': ['Yes', 'No']
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+    def test_create_voting_url_whitespaces(self):
+        v = self.create_voting(url="_test voting")
+        self.assertTrue(Voting.objects.filter(url="_test+voting").exists())
+
+    def test_create_voting_without_url(self):
+        
+        data = {
+            'name': 'Example No URL',
+            'desc': 'Description example',
+            'question': 'Is this a question? ',
+            'question_opt': ['Yes', 'No']
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+    def test_create_voting_without_url_and_question(self):
+        
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question_opt': ['Yes', 'No']
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+    def test_create_voting_onlyname(self):
+        
+
+        data = {
+            'name': 'Example'
+            
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+    
 class Test_enrmorvaz(BaseTestCase):
     def setUp(self):
 
@@ -267,8 +328,6 @@ class Test_enrmorvaz(BaseTestCase):
             q = QuestionOption()
             q.save()
         except:
-            self.assertTrue(True)
-    
-   
-        
+            self.assertTrue(True)    
+
     
