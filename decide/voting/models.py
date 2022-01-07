@@ -74,7 +74,7 @@ class Voting(models.Model):
     
 
     #url = models.CharField(max_length=40)
-    url = models.CharField(max_length=40, help_text=u"http://localhost:8000/booth/",null=True)
+    url = models.CharField(max_length=40, help_text=u"http://localhost:8000/booth/")
 
     def clean_fields(self, exclude=None):
         super(Voting, self).clean_fields(exclude)
