@@ -16,6 +16,7 @@ from mixnet.models import Auth
 from voting.models import Voting, Question, QuestionOption
 
 
+
 class VotingTestCase(BaseTestCase):
 
     def setUp(self):
@@ -32,17 +33,15 @@ class VotingTestCase(BaseTestCase):
         return k.encrypt(msg)
 
     #def create_voting(self):
-    def create_voting(self, url=None):
+    def create_voting(self, url):
         q = Question(desc='test question')
         q.save()
         for i in range(5):
             opt = QuestionOption(question=q, option='option {}'.format(i+1))
             opt.save()
         #v = Voting(name='test voting', question=q)
-        if url:
-            v = Voting(name='test voting', question=q, url=url)
-        else: 
-            v = Voting(name='test voting', question=q)
+        
+        v = Voting(name='test voting', question=q, url=url)
         v.save()
 
         a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
@@ -89,7 +88,7 @@ class VotingTestCase(BaseTestCase):
         return clear
 
     def test_complete_voting(self):
-        v = self.create_voting()
+        v = self.create_voting('test')
         self.create_voters(v)
 
         v.create_pubkey()
@@ -129,6 +128,8 @@ class VotingTestCase(BaseTestCase):
         data = {
             'name': 'Example',
             'desc': 'Description example',
+            'url': 'test',
+            #'category':'Urgente',
             'question': 'I want a ',
             'question_opt': ['cat', 'dog', 'horse']
         }
@@ -137,7 +138,7 @@ class VotingTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_update_voting(self):
-        voting = self.create_voting()
+        voting = self.create_voting('test')
 
         data = {'action': 'start'}
         #response = self.client.post('/voting/{}/'.format(voting.pk), data, format='json')
@@ -255,3 +256,17 @@ class VotingTestCase(BaseTestCase):
 
         response = self.client.post('/voting/', data, format='json')
         self.assertEqual(response.status_code, 401)
+
+    def test_create_voting_onlyname(self):
+        
+
+        data = {
+            'name': 'Example'
+            
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+    
+     
+    
