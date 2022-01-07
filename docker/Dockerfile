@@ -11,7 +11,7 @@ RUN pip install ipython
 WORKDIR /app
 
 
-RUN git clone git@github.com:Decide-torreon/decide.git .
+RUN git clone -b Voting-Docker https://github.com/Decide-torreon/decide.git .
 
 RUN pip install -r requirements.txt
 
