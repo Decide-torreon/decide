@@ -215,7 +215,70 @@ class VotingTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), 'Voting already tallied')
     
-   
+    #Pruebas josregmej
+    def test_create_voting_from_api_noadmin(self):
+        data = {'name': 'Example'}
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+
+        self.login(user='noadmin')
+        response = mods.post('voting', params=data, response=True)
+        self.assertEqual(response.status_code, 403)
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question': 'I want a ',
+            'question_opt': ['cat', 'dog', 'horse'],
+            'category': 'Urgente'
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 403 )
+        
+    def test_create_voting_without_url_and_question(self):
+        v = self.create_voting('test')
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question_opt': ['Yes', 'No'],
+            'category': 'Urgente'
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+        
+    def test_create_voting_without_options(self):
+        v = self.create_voting('test')
+
+        data = {
+            'name': 'Example',
+            'desc': 'Description example',
+            'question': 'Is there any url? ',
+            'category': 'Urgente'
+        }
+
+        response = self.client.post('/voting/', data, format='json')
+        self.assertEqual(response.status_code, 401)
+        
+    def test_create_Voting_error(self):
+
+        try: 
+            voting = Voting()
+            voting.save()
+        except:
+            self.assertTrue(True)
+            
+    def test_create_Question_error(self):
+
+        try: 
+            question = Question()
+            question.save()
+        except:
+            self.assertTrue(True)
+    
+
         
     def test_create_voting_url_exists(self):
         v = self.create_voting(url="_test_voting")
@@ -293,6 +356,68 @@ class Test_enrmorvaz(BaseTestCase):
         self.v=None
         self.v2=None
 
+    def encrypt_msg(self, msg, v, bits=settings.KEYBITS):
+        pk = v.pub_key
+        p, g, y = (pk.p, pk.g, pk.y)
+        k = MixCrypt(bits=bits)
+        k.k = ElGamal.construct((p, g, y))
+        return k.encrypt(msg)
+
+    #def create_voting(self):
+    def create_voting(self, url):
+        q = Question(desc='test question')
+        q.save()
+        for i in range(5):
+            opt = QuestionOption(question=q, option='option {}'.format(i+1))
+            opt.save()
+        #v = Voting(name='test voting', question=q)
+        
+        v = Voting(name='test voting', question=q, url=url)
+        v.save()
+
+        a, _ = Auth.objects.get_or_create(url=settings.BASEURL,
+                                          defaults={'me': True, 'name': 'test auth'})
+        a.save()
+        v.auths.add(a)
+
+        return v
+
+    def create_voters(self, v):
+        for i in range(100):
+            u, _ = User.objects.get_or_create(username='testvoter{}'.format(i))
+            u.is_active = True
+            u.save()
+            c = Census(voter_id=u.id, voting_id=v.id)
+            c.save()
+
+    def get_or_create_user(self, pk):
+        user, _ = User.objects.get_or_create(pk=pk)
+        user.username = 'user{}'.format(pk)
+        user.set_password('qwerty')
+        user.save()
+        return user
+
+    def store_votes(self, v):
+        voters = list(Census.objects.filter(voting_id=v.id))
+        voter = voters.pop()
+
+        clear = {}
+        for opt in v.question.options.all():
+            clear[opt.number] = 0
+            for i in range(random.randint(0, 5)):
+                a, b = self.encrypt_msg(opt.number, v)
+                data = {
+                    'voting': v.id,
+                    'voter': voter.voter_id,
+                    'vote': { 'a': a, 'b': b },
+                }
+                clear[opt.number] += 1
+                user = self.get_or_create_user(voter.voter_id)
+                self.login(user=user.username)
+                voter = voters.pop()
+                mods.post('store', json=data)
+        return clear
+
     def test_OpcionesSiNo(self):
         q = Question.objects.get(desc='Esto es una pregunta de si o no')
         q.save()
@@ -331,69 +456,6 @@ class Test_enrmorvaz(BaseTestCase):
             self.assertTrue(True)    
 
                    
-#Pruebas josregmej
-    def test_create_voting_from_api_noadmin(self):
-        data = {'name': 'Example'}
-        response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 401)
-
-        self.login(user='noadmin')
-        response = mods.post('voting', params=data, response=True)
-        self.assertEqual(response.status_code, 403)
-
-        data = {
-            'name': 'Example',
-            'desc': 'Description example',
-            'question': 'I want a ',
-            'question_opt': ['cat', 'dog', 'horse'],
-            'category': 'Urgente'
-        }
-
-        response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 403 )
-        
-    def test_create_voting_without_url_and_question(self):
-        v = self.create_voting()
-
-        data = {
-            'name': 'Example',
-            'desc': 'Description example',
-            'question_opt': ['Yes', 'No'],
-            'category': 'Urgente'
-        }
-
-        response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 401)
-        
-    def test_create_voting_without_url_and_options(self):
-        v = self.create_voting()
-
-        data = {
-            'name': 'Example',
-            'desc': 'Description example',
-            'question': 'Is there any url? ',
-            'category': 'Urgente'
-        }
-
-        response = self.client.post('/voting/', data, format='json')
-        self.assertEqual(response.status_code, 401)
-        
-    def test_create_Voting_error(self):
-
-        try: 
-            voting = Voting()
-            voting.save()
-        except:
-            self.assertTrue(True)
-            
-    def test_create_Question_error(self):
-
-        try: 
-            question = Question()
-            question.save()
-        except:
-            self.assertTrue(True)
-    
 
             
 #Test creación de pregunta
