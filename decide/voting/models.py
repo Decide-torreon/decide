@@ -83,7 +83,8 @@ class Voting(models.Model):
 
         if Voting.objects.filter(url=url).exists():
             raise ValidationError({'url': "The url already exists."})
-
+    
+    
     def save(self, *args, **kwargs):
         #self.url = urllib.parse.quote_plus(self.url.encode('utf-8'))
         try:
