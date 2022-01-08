@@ -10,7 +10,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:    
-      - name: Run migrations
-        run: cd decide;python manage.py migrate
       - name: Run tests
         run: cd decide;coverage run --branch --source=. ./manage.py test voting --keepdb; coverage xml;
