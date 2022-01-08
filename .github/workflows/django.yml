@@ -34,19 +34,21 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install codacy-coverage
+    - name: Run migrations
+      run: cd decide;python manage.py makemigrations;python manage.py migrate
     - name: Run tests     
       run: cd decide;coverage run --branch --source=. ./manage.py test voting --keepdb; coverage xml;
-    - name: Codacy Coverage Reporter
-      uses: codacy/codacy-coverage-reporter-action@v1.1.0
-      with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: decide/coverage.xml
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-      with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "decide-torreon"
-          heroku_email: "enrmorvaz@alum.us.es"
+    #- name: Codacy Coverage Reporter
+    #  uses: codacy/codacy-coverage-reporter-action@v1.1.0
+    #  with:
+    #      project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+     #     coverage-reports: decide/coverage.xml
+  #deploy:
+   # runs-on: ubuntu-latest
+    #steps:
+    #- uses: actions/checkout@v1
+    #- uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+    #  with:
+     #     heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+      #    heroku_app_name: "decide-torreon"
+       #   heroku_email: "enrmorvaz@alum.us.es"
