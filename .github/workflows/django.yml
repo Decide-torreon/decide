@@ -34,8 +34,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install codacy-coverage
-    - name: Run migrations
-      run: cd decide;python manage.py migrate
     - name: Run tests     
       run: cd decide;coverage run --branch --source=. ./manage.py test voting --keepdb; coverage xml;
     - name: Codacy Coverage Reporter
