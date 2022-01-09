@@ -1,36 +1,14 @@
-import urllib
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
-from django.utils.translation import gettext_lazy as _
 
 from base import mods
 from base.models import Auth, Key
 
 
-import zipfile
-
 class Question(models.Model):
     desc = models.TextField()
-    is_yes_no_question = models.BooleanField(default=False)
-    
-
-    def save(self):
-        super().save()
-        
-        if self.is_yes_no_question:
-            if self.options.all().count()>=1:
-                self.options.all().delete()
-    
-            question_yes = QuestionOption(option = 'Yes', number = 0, question = self)
-            question_yes.save()
-
-            question_no = QuestionOption(option = 'No', number = 1, question = self)
-            question_no.save()
-        
-        
 
     def __str__(self):
         return self.desc
@@ -53,7 +31,7 @@ class QuestionOption(models.Model):
 class Voting(models.Model):
     name = models.CharField(max_length=200)
     desc = models.TextField(blank=True, null=True)
-    question = models.ForeignKey(Question, related_name='voting', null=True, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='voting', on_delete=models.CASCADE)
 
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
@@ -64,6 +42,7 @@ class Voting(models.Model):
     tally = JSONField(blank=True, null=True)
     postproc = JSONField(blank=True, null=True)
 
+<<<<<<< HEAD
     TYPES = (
         ('Importante', 'Importante'),
         ('Informativa', 'Informativa'),
@@ -95,6 +74,8 @@ class Voting(models.Model):
         print("self.url", self.url)
         super(Voting, self).save(*args, **kwargs)
 
+=======
+>>>>>>> master
     def create_pubkey(self):
         if self.pub_key or not self.auths.count():
             return
@@ -172,24 +153,5 @@ class Voting(models.Model):
         self.postproc = postp
         self.save()
 
-        archivo = open("tallydeVoting"+str((self.id))+".txt","w")
-        archivo.write("\n Hola Mundo\n")
-        archivo.write(str((opts)))
-        archivo.close()
-
-        zip_file=zipfile.ZipFile("tally.zip", mode="w")
-        zip_file.write("tallydeVoting"+str((self.id))+".txt")
-        zip_file.close()
-        return zip_file
-
     def __str__(self):
-        return self.name 
-
-
-
-
-
-    
-
-
-        
+        return self.name
