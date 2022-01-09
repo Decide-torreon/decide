@@ -42,6 +42,40 @@ class Voting(models.Model):
     tally = JSONField(blank=True, null=True)
     postproc = JSONField(blank=True, null=True)
 
+<<<<<<< HEAD
+    TYPES = (
+        ('Importante', 'Importante'),
+        ('Informativa', 'Informativa'),
+        ('Urgente', 'Urgente'),
+        ('Prueba', 'Prueba'),
+    )
+    category = models.CharField(max_length=1000, choices=TYPES, blank=True)
+    
+
+    #url = models.CharField(max_length=40)
+    url = models.CharField(max_length=40, help_text=u"http://localhost:8000/booth/")
+
+    def clean_fields(self, exclude=None):
+        super(Voting, self).clean_fields(exclude)
+
+        url = urllib.parse.quote_plus(self.url.encode('utf-8'))
+
+        if Voting.objects.filter(url=url).exists():
+            raise ValidationError({'url': "The url already exists."})
+    
+    
+    def save(self, *args, **kwargs):
+        #self.url = urllib.parse.quote_plus(self.url.encode('utf-8'))
+        try:
+            Voting.objects.get(name=self.name)
+        except:
+            encode_url = urllib.parse.quote_plus(self.url.encode('utf-8'))
+            self.url = encode_url
+        print("self.url", self.url)
+        super(Voting, self).save(*args, **kwargs)
+
+=======
+>>>>>>> master
     def create_pubkey(self):
         if self.pub_key or not self.auths.count():
             return
